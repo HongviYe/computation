@@ -1,5 +1,7 @@
 #include <cstdio>
+#include <string>
 #include <cmath>
+#include <fstream>
 
 
 int bd = 4;
@@ -245,7 +247,6 @@ double WENO_Y(int i, int j, int k)     //y方向WENO差分
 void begin()
 {
     int i, j;
-    int b1 = 1, b2 = 1, b3 = 1, b4 = 1, b5 = 1;
     while (t < 40000)
     {
         loop(t);
@@ -255,74 +256,20 @@ void begin()
         {
             printf("Loading... %d%%\n", t / 500);
         }
-        if ((t == 4000) && (b1 = 1))
-        {
-            b1 = 0;
-            for (i = 0 + bd; i <= 300; i++)     //输出到output1.txt，用python进行绘图 
-                for (j = 0 + bd; j <= 300; j++)
-                    rp[i][j] = rho[j][i];
-            FILE* p1;
-            p1 = fopen("output1.txt", "w");
-            for (i = 0 + bd; i <= 100 + bd; i++) {
-                for (j = 0 + bd; j <= 300 + bd; j++)
-                    fprintf(p1, "%.1f ", rp[i][j]);
-                fprintf(p1, "\n");
-            }
-        }
-        if ((t == 8000) && (b2 = 1))
-        {
-            b2 = 0;
-            for (i = 0 + bd; i <= 300; i++)     //输出到output2.txt，用python进行绘图 
-                for (j = 0 + bd; j <= 300; j++)
-                    rp[i][j] = rho[j][i];
-            FILE* p2;
-            p2 = fopen("output2.txt", "w");
-            for (i = 0 + bd; i <= 100 + bd; i++) {
-                for (j = 0 + bd; j <= 300 + bd; j++)
-                    fprintf(p2, "%.1f ", rp[i][j]);
-                fprintf(p2, "\n");
-            }
-        }
-        if ((t == 12000) && (b3 = 1))
-        {
-            b3 = 0;
-            for (i = 0 + bd; i <= 300; i++)     //输出到output3.txt，用python进行绘图 
-                for (j = 0 + bd; j <= 300; j++)
-                    rp[i][j] = rho[j][i];
-            FILE* p3;
-            p3 = fopen("output3.txt", "w");
-            for (i = 0 + bd; i <= 100 + bd; i++) {
-                for (j = 0 + bd; j <= 300 + bd; j++)
-                    fprintf(p3, "%.1f ", rp[i][j]);
-                fprintf(p3, "\n");
-            }
-        }
-        if ((t == 24000) && (b4 = 1))
-        {
-            b4 = 0;
-            for (i = 0 + bd; i <= 300; i++)     //输出到output4.txt，用python进行绘图 
-                for (j = 0 + bd; j <= 300; j++)
-                    rp[i][j] = rho[j][i];
-            FILE* p4;
-            p4 = fopen("output4.txt", "w");
-            for (i = 0 + bd; i <= 100 + bd; i++) {
-                for (j = 0 + bd; j <= 300 + bd; j++)
-                    fprintf(p4, "%.1f ", rp[i][j]);
-                fprintf(p4, "\n");
-            }
-        }
-        if ((t == 40000) && (b5 = 1))
-        {
-            b5 = 0;
-            for (i = 0 + bd; i <= 300; i++)     //输出到output5.txt，用python进行绘图 
-                for (j = 0 + bd; j <= 300; j++)
-                    rp[i][j] = rho[j][i];
-            FILE* p5;
-            p5 = fopen("output5.txt", "w");
-            for (i = 0 + bd; i <= 100 + bd; i++) {
-                for (j = 0 + bd; j <= 300 + bd; j++)
-                    fprintf(p5, "%.1f ", rp[i][j]);
-                fprintf(p5, "\n");
+        if (t % 4000 == 0) {
+            int id = t / 4000;
+            if (id > 0) {
+                for (i = 0 + bd; i <= 300; i++)     //输出到output1.txt，用python进行绘图 
+                    for (j = 0 + bd; j <= 300; j++)
+                        rp[i][j] = rho[j][i];
+                std::ofstream fout("output"+std::to_string(id)+".txt");
+                fout.precision(5);
+                for (i = 0 + bd; i <= 100 + bd; i++) {
+                    for (j = 0 + bd; j <= 300 + bd; j++)
+                        fout << rp[i][j] << " ";
+                    fout << std::endl;
+                }
+                fout.close();
             }
         }
     }
